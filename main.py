@@ -91,6 +91,9 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
         self.language = "us"
 
         self.info = QMessageBox()
+        self.ok = self.info.addButton(QMessageBox.Ok)
+        self.ok.setFont(QFont("Comic Sans MS", 10))
+        self.ok.setStyleSheet("background-color: rgb(210, 217, 255);")
         self.info.setStyleSheet("background-color: rgb(149, 181, 255);")
         self.info.setFont(QFont("Comic Sans MS", 10))
         self.info.setWindowIcon(QIcon("images/icons/question_icon.png"))

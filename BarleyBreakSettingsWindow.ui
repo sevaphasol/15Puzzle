@@ -19,7 +19,7 @@
   <widget class="QLabel" name="settings_label">
    <property name="geometry">
     <rect>
-     <x>360</x>
+     <x>300</x>
      <y>50</y>
      <width>481</width>
      <height>121</height>
@@ -54,7 +54,7 @@
   <widget class="QWidget" name="gridLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>260</x>
+     <x>200</x>
      <y>190</y>
      <width>581</width>
      <height>161</height>
@@ -99,7 +99,17 @@
        <font>
         <family>Comic Sans MS</family>
         <pointsize>20</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border: 2px solid grey;
+background-color:   rgb(87, 96, 134);
+padding: 5px;
+color: white;
+font-weight: bold;
+</string>
       </property>
       <property name="minimum">
        <number>1</number>
@@ -118,10 +128,16 @@
        <font>
         <family>Comic Sans MS</family>
         <pointsize>14</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
        </font>
       </property>
       <property name="styleSheet">
-       <string notr="true"/>
+       <string notr="true">border: 2px solid grey;
+background-color: rgb(87, 96, 134);
+color:  rgb(255, 255, 255);
+font-weight: bold;
+padding: 5px;</string>
       </property>
      </widget>
     </item>

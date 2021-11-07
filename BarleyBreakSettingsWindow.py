@@ -17,7 +17,7 @@ class Ui_Form(object):
         Form.resize(1090, 665)
         Form.setStyleSheet("background-color: rgb(149, 181, 255);")
         self.settings_label = QtWidgets.QLabel(Form)
-        self.settings_label.setGeometry(QtCore.QRect(360, 50, 481, 121))
+        self.settings_label.setGeometry(QtCore.QRect(300, 50, 481, 121))
         font = QtGui.QFont()
         font.setFamily("Comic Sans MS")
         font.setPointSize(36)
@@ -29,7 +29,7 @@ class Ui_Form(object):
         self.back_btn.setText("")
         self.back_btn.setObjectName("back_btn")
         self.gridLayoutWidget = QtWidgets.QWidget(Form)
-        self.gridLayoutWidget.setGeometry(QtCore.QRect(260, 190, 581, 161))
+        self.gridLayoutWidget.setGeometry(QtCore.QRect(200, 190, 581, 161))
         self.gridLayoutWidget.setObjectName("gridLayoutWidget")
         self.gridLayout = QtWidgets.QGridLayout(self.gridLayoutWidget)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
@@ -54,7 +54,15 @@ class Ui_Form(object):
         font = QtGui.QFont()
         font.setFamily("Comic Sans MS")
         font.setPointSize(20)
+        font.setBold(True)
+        font.setWeight(75)
         self.speed_spin_box.setFont(font)
+        self.speed_spin_box.setStyleSheet("border: 2px solid grey;\n"
+"background-color:   rgb(87, 96, 134);\n"
+"padding: 5px;\n"
+"color: white;\n"
+"font-weight: bold;\n"
+"")
         self.speed_spin_box.setMinimum(1)
         self.speed_spin_box.setMaximum(10)
         self.speed_spin_box.setProperty("value", 3)
@@ -64,8 +72,14 @@ class Ui_Form(object):
         font = QtGui.QFont()
         font.setFamily("Comic Sans MS")
         font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
         self.language_comboBox.setFont(font)
-        self.language_comboBox.setStyleSheet("")
+        self.language_comboBox.setStyleSheet("border: 2px solid grey;\n"
+"background-color: rgb(87, 96, 134);\n"
+"color:  rgb(255, 255, 255);\n"
+"font-weight: bold;\n"
+"padding: 5px;")
         self.language_comboBox.setObjectName("language_comboBox")
         self.gridLayout.addWidget(self.language_comboBox, 1, 1, 1, 1)
 
