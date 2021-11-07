@@ -10,7 +10,7 @@ from BarleyBreakMainWindow import Ui_MainWindow
 from BarleyBreakSettingsWindow import Ui_Form
 
 from time import sleep, time
-from random import shuffle
+from random import shuffle, randint
 
 
 class SettingsScreen(QWidget, Ui_Form):
@@ -181,7 +181,7 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
 
         for i in range(len(self.field) - 1):
             # ставим на игровые кнопки картинки
-            self.field[i].setStyleSheet(f"image: url(images/play_buttons/{i + 1}.png);"
+            self.field[i].setStyleSheet(f"image: url(images/play_buttons/{i + 1}/{randint(1, 3)}.png);"
                                         "background-color: Transparent;")
             self.field[i].clicked.connect(self.my_move)
 
@@ -528,6 +528,10 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
         for i in range(16):
             x, y = self.positions[i]
             self.field[i].move(x, y)
+        for i in range(len(self.field) - 1):
+            # ставим на игровые кнопки картинки
+            self.field[i].setStyleSheet(f"image: url(images/play_buttons/{i + 1}/{randint(1, 3)}.png);"
+                                        "background-color: Transparent;")
 
     def restart(self):
         self.statusBar.clearMessage()
