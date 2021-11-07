@@ -296,7 +296,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "BarleyBreak.exe"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "BarleyBreak"))
         self.timer_label.setText(_translate("MainWindow", "00:00:00"))
         self.score_label.setText(_translate("MainWindow", "Score"))
         self.steps_label_2.setText(_translate("MainWindow", "Steps:"))
