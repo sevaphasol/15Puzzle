@@ -94,6 +94,7 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
         self.ok = self.info.addButton(QMessageBox.Ok)
         self.ok.setFont(QFont("Comic Sans MS", 10))
         self.ok.setStyleSheet("background-color: rgb(210, 217, 255);")
+        self.ok.clicked.connect(self.sound)
         self.info.setStyleSheet("background-color: rgb(149, 181, 255);")
         self.info.setFont(QFont("Comic Sans MS", 10))
         self.info.setWindowIcon(QIcon("images/icons/question_icon.png"))
@@ -255,10 +256,13 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
             self.info.setText(self.tips[1])
             self.info.setWindowTitle("Tips")
 
-    def animation_of_button(self, btn, position=""):
-        # анимация не игровых кнопок (новая игра, рестарт, звук, настройки, стоп и старт таймер)
+    def sound(self):
         if self.volume_is_on:  # если звук включен проигрываем звук
             self.sound_buttons.play()
+
+    def animation_of_button(self, btn, position=""):
+        # анимация не игровых кнопок (новая игра, рестарт, звук, настройки, стоп и старт таймер)
+        self.sound()
         # если кнопка не имеет двоякого положения (старт, рестар, включен, выключен) просто берем две картинки
         # если двоякое положение есть обращаемся по этому положению и берем две картинки
         if position == "":
