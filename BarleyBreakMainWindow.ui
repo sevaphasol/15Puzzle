@@ -653,6 +653,19 @@ QProgressBar::chunk {border-radius: 10px; background-color: qlineargradient(spre
      <string>0</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="back_move_btn">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>50</y>
+      <width>141</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PushButton</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

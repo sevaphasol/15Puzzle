@@ -147,6 +147,8 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
 
         self.count_of_steps = 0
 
+        self.moves = []
+
         self.timer = QTimer()  # создаем таймер
         self.start_time = time()
         self.times = []
@@ -194,6 +196,7 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
         self.start_timer_btn.clicked.connect(self.start_timer)
         self.stop_timer_btn.clicked.connect(self.stop_timer)
         self.tips_btn.clicked.connect(self.show_dialog)
+        self.back_move_btn.clicked.connect(self.back_move)
 
         self.refresh_language()
 
@@ -428,7 +431,7 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
                         step = -4
                     else:
                         step = 4
-                    buttons = [(self.field[i], i) for i in range(pos_of_btn, pos_of_empty_btn, step)]
+                    buttons = [(self.field[i], i) for i in range(pos_of_btn, pos_of_empty_btn, step)][::-1]
                     animation_group = QParallelAnimationGroup(self)
                     for button, pos in buttons:
                         new_x, new_y = self.positions[pos + step]
@@ -436,6 +439,7 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
                         animation.setEndValue(QPoint(new_x, new_y))
                         animation.setDuration(self.speeds_of_play_buttons[self.speed_of_play_buttons])
                         animation_group.addAnimation(animation)
+                        self.moves.append((button, self.positions[pos], (new_x, new_y)))
                     animation_group.start()
                     if len(buttons) == 1:
                         self.field[pos_of_btn], self.field[pos_of_btn + step] = \
@@ -458,7 +462,7 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
                         step = -1
                     else:
                         step = 1
-                    buttons = [(self.field[i], i) for i in range(pos_of_btn, pos_of_empty_btn, step)]
+                    buttons = [(self.field[i], i) for i in range(pos_of_btn, pos_of_empty_btn, step)][::-1]
                     animation_group = QParallelAnimationGroup(self)
                     for button, pos in buttons:
                         new_x, new_y = self.positions[pos + step]
@@ -466,6 +470,7 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
                         animation.setEndValue(QPoint(new_x, new_y))
                         animation.setDuration(self.speeds_of_play_buttons[self.speed_of_play_buttons])
                         animation_group.addAnimation(animation)
+                        self.moves.append((button, self.positions[pos], (new_x, new_y)))
                     animation_group.start()
                     if len(buttons) == 1:
                         self.field[pos_of_btn], self.field[pos_of_btn + step] = \
@@ -508,6 +513,22 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
             elif self.language == "ru":
                 self.statusBar.showMessage("Сперва перемешайте пятнашки")
             """начальное поле игрок еще не перемешал пятнашки"""
+
+    def back_move(self):
+        if self.moves:
+            i = self.moves.pop()
+            empty_index = self.field.index(self.empty)
+            btn = i[0]
+            btn_index = self.field.index(btn)
+            x1, y1 = i[1]
+            x2, y2 = i[2]
+            btn.move(x1, y1)
+            self.empty.move(x2, y2)
+            self.field[btn_index], self.field[empty_index] = self.field[empty_index], self.field[btn_index]
+            self.count_of_steps -= 1
+            self.display_steps()
+        else:
+            pass
 
     def new_game(self):
         """новая игра, обновляется таймер, информация о времени, кнопка рестарт и поле"""
@@ -613,4 +634,4 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = BarleyBreakMainWindow(app)
     ex.show()
-    sys.exit(app.exec_())  # commit
+    sys.exit(app.exec_())
