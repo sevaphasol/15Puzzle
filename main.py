@@ -221,7 +221,9 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
                        self.stop_timer_btn: (f"images/buttons_{self.language}/stop_timer_pushed.png",
                                              f"images/buttons_{self.language}/stop_timer_not_pushed.png"),
                        self.tips_btn: (f"images/buttons_{self.language}/tips_pushed.png",
-                                       f"images/buttons_{self.language}/tips_not_pushed.png")}
+                                       f"images/buttons_{self.language}/tips_not_pushed.png"),
+                       self.back_move_btn: (f"images/buttons_{self.language}/back_move_pushed.png",
+                                            f"images/buttons_{self.language}/back_move_not_pushed.png")}
 
         # ставим картинки на кнопки
         self.new_game_btn.setStyleSheet(f"image: url(images/buttons_{self.language}/new_game_not_pushed.png);"
@@ -247,6 +249,8 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
                                           "border-radius: 10 px;")
         self.tips_btn.setStyleSheet(f"image: url(images/buttons_{self.language}/tips_not_pushed.png);"
                                     "border-radius: 10 px;")
+        self.back_move_btn.setStyleSheet(f"image: url(images/buttons_{self.language}/back_move_not_pushed.png);"
+                                   "border-radius: 10 px;")
         self.you_win_label.setStyleSheet(f"image: url(images/instant_images_{self.language}/you_win.png);")
         if self.language == "ru":
             self.score_label.setText("Результаты")
@@ -515,6 +519,9 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
             """начальное поле игрок еще не перемешал пятнашки"""
 
     def back_move(self):
+        btn = self.sender()
+        if btn == self.back_move_btn:
+            self.animation_of_button(btn)
         if self.moves:
             i = self.moves.pop()
             empty_index = self.field.index(self.empty)
