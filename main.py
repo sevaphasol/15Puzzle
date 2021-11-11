@@ -29,6 +29,9 @@ class SettingsScreen(QWidget, Ui_Form):
         self.speed_spin_box.setValue(self.main_window.speed_of_play_buttons)
         self.speed_spin_box.valueChanged.connect(self.refresh_speed_value)
         self.language_comboBox.activated[str].connect(self.change_language)
+        self.language_comboBox.addItem("English")
+        self.language_comboBox.addItem("Русский")
+        self.back_comboBox.activated[str].connect(self.back_animation_refresh)
         self.refresh_language()
 
     def back_to_menu(self):
@@ -57,31 +60,38 @@ class SettingsScreen(QWidget, Ui_Form):
         self.main_window.refresh_language()
         self.refresh_language()
 
+    def back_animation_refresh(self, text):
+        self.main_window.animation_back_move_btn = (text == "Yes" or text == "Да")
+
     def refresh_language(self):
         self.back_btn.setStyleSheet(f"image: url(images/buttons_{self.main_window.language}/back_not_pushed.png);"
                                     "border-radius: 10 px;")
 
         if self.main_window.language == "ru":
-            self.language_comboBox.clear()
-            self.language_comboBox.addItem("English")
-            self.language_comboBox.addItem("Русский")
-
             self.settings_label.setText("Настройки")
             self.speed_label.setText("Скорость")
             self.language_label.setText("Язык")
             self.back_move_label.setText("Анимация хода назад")
-
             self.language_label.setText("Язык")
+            self.back_comboBox.clear()
+            if self.main_window.animation_back_move_btn:
+                self.back_comboBox.addItem("Да")
+                self.back_comboBox.addItem("Нет")
+            else:
+                self.back_comboBox.addItem("Нет")
+                self.back_comboBox.addItem("Да")
         elif self.main_window.language == "us":
-            self.language_comboBox.clear()
-            self.language_comboBox.addItem("Русский")
-            self.language_comboBox.addItem("English")
-
-
             self.settings_label.setText("Settings")
             self.speed_label.setText("Speed")
             self.language_label.setText("Language")
             self.back_move_label.setText("Animation of back")
+            self.back_comboBox.clear()
+            if self.main_window.animation_back_move_btn:
+                self.back_comboBox.addItem("Yes")
+                self.back_comboBox.addItem("No")
+            else:
+                self.back_comboBox.addItem("No")
+                self.back_comboBox.addItem("Yes")
 
 
 class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
@@ -537,7 +547,7 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
             self.animation_of_button(btn)
         if self.game_is_started:
             if self.timer_is_started:
-                if self.moves:
+                if bool(self.moves):
                     buttons = self.moves.pop()
                     if not self.animation_back_move_btn:
                         for button, old_pos, pos in buttons[::-1]:
