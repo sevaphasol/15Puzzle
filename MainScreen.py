@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'BarleyBreakMainWindow.ui'
+# Form implementation generated from reading ui file 'MainScreen.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -11,12 +11,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1090, 665)
-        MainWindow.setStyleSheet("background-color: rgb(149, 181, 255);")
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
+class Ui_MainWindow_Play(object):
+    def setupUi(self, MainWindow_Play):
+        MainWindow_Play.setObjectName("MainWindow_Play")
+        MainWindow_Play.resize(1090, 665)
+        MainWindow_Play.setStyleSheet("background-color: rgb(149, 181, 255);")
+        self.centralwidget = QtWidgets.QWidget(MainWindow_Play)
         self.centralwidget.setObjectName("centralwidget")
         self.background_label = QtWidgets.QLabel(self.centralwidget)
         self.background_label.setGeometry(QtCore.QRect(370, 170, 361, 361))
@@ -287,22 +287,22 @@ class Ui_MainWindow(object):
         self.back_move_btn.setGeometry(QtCore.QRect(90, 50, 181, 81))
         self.back_move_btn.setText("")
         self.back_move_btn.setObjectName("back_move_btn")
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        MainWindow_Play.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(MainWindow_Play)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1090, 22))
         self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.actionSave = QtWidgets.QAction(MainWindow)
+        MainWindow_Play.setMenuBar(self.menubar)
+        self.actionSave = QtWidgets.QAction(MainWindow_Play)
         self.actionSave.setObjectName("actionSave")
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.retranslateUi(MainWindow_Play)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow_Play)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, MainWindow_Play):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "BarleyBreak"))
-        self.timer_label.setText(_translate("MainWindow", "00:00:00"))
-        self.score_label.setText(_translate("MainWindow", "Score"))
-        self.steps_label_2.setText(_translate("MainWindow", "Steps:"))
-        self.steps_label.setText(_translate("MainWindow", "0"))
-        self.actionSave.setText(_translate("MainWindow", "Save"))
+        MainWindow_Play.setWindowTitle(_translate("MainWindow_Play", "BarleyBreak"))
+        self.timer_label.setText(_translate("MainWindow_Play", "00:00:00"))
+        self.score_label.setText(_translate("MainWindow_Play", "Score"))
+        self.steps_label_2.setText(_translate("MainWindow_Play", "Steps:"))
+        self.steps_label.setText(_translate("MainWindow_Play", "0"))
+        self.actionSave.setText(_translate("MainWindow_Play", "Save"))

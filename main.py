@@ -1,98 +1,30 @@
 import sys
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QMessageBox, QStackedWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget
 from PyQt5.Qt import QParallelAnimationGroup, QStatusBar, QFont
 from PyQt5.QtCore import QTimer, QPropertyAnimation, QPoint
 from PyQt5.QtGui import QIcon
 from PyQt5.QtMultimedia import QSound
 import sqlite3
 
-from ui.BarleyBreakMainWindow import Ui_MainWindow
-from ui.BarleyBreakSettingsWindow import Ui_Form
+from MainScreen import Ui_MainWindow_Play
+from SettingsScreen import Ui_MainWindow_Settings
+from StartScreen import Ui_MainWindow_Start
 
 from time import sleep, time
 from random import shuffle, randint
 
 
-class SettingsScreen(QWidget, Ui_Form):
+class StartScreen(QMainWindow, Ui_MainWindow_Start):
     def __init__(self, app_, main_window):
         super().__init__()
         self.initUI(app_, main_window)
 
-    def initUI(self, app_, main_window):
+    def initUI(self, app, main_window):
         self.setupUi(self)
-        self.app = app_
-        self.main_window = main_window
-        self.back_btn.clicked.connect(self.back_to_menu)
-        self.speed_spin_box.setValue(self.main_window.speed_of_play_buttons)
-        self.speed_spin_box.valueChanged.connect(self.refresh_speed_value)
-        self.language_comboBox.activated[str].connect(self.change_language)
-        self.language_comboBox.addItem("English")
-        self.language_comboBox.addItem("Русский")
-        self.back_comboBox.activated[str].connect(self.back_animation_refresh)
-        self.refresh_language()
-
-    def back_to_menu(self):
-        btn = self.back_btn
-        if self.sender() == btn:
-            # анимация
-            if self.main_window.volume_is_on:
-                self.main_window.sound_buttons.play()
-            btn.setStyleSheet(f"image: url(images/buttons_{self.main_window.language}/back_pushed.png);"
-                              "border-radius: 10 px;")
-            self.app.processEvents()
-            sleep(0.1)
-            btn.setStyleSheet(f"image: url(images/buttons_{self.main_window.language}/back_not_pushed.png);"
-                              "border-radius: 10 px;")
-            self.app.processEvents()
-        windows.setCurrentIndex(0)
-
-    def refresh_speed_value(self):
-        self.main_window.speed_of_play_buttons = self.speed_spin_box.value()
-
-    def change_language(self, text):
-        if text == "Русский":
-            self.main_window.language = "ru"
-        elif text == "English":
-            self.main_window.language = "us"
-        self.main_window.refresh_language()
-        self.refresh_language()
-
-    def back_animation_refresh(self, text):
-        self.main_window.animation_back_move_btn = (text == "Yes" or text == "Да")
-
-    def refresh_language(self):
-        self.back_btn.setStyleSheet(f"image: url(images/buttons_{self.main_window.language}/back_not_pushed.png);"
-                                    "border-radius: 10 px;")
-
-        if self.main_window.language == "ru":
-            self.settings_label.setText("Настройки")
-            self.speed_label.setText("Скорость")
-            self.language_label.setText("Язык")
-            self.back_move_label.setText("Анимация хода назад")
-            self.language_label.setText("Язык")
-            self.back_comboBox.clear()
-            if self.main_window.animation_back_move_btn:
-                self.back_comboBox.addItem("Да")
-                self.back_comboBox.addItem("Нет")
-            else:
-                self.back_comboBox.addItem("Нет")
-                self.back_comboBox.addItem("Да")
-        elif self.main_window.language == "us":
-            self.settings_label.setText("Settings")
-            self.speed_label.setText("Speed")
-            self.language_label.setText("Language")
-            self.back_move_label.setText("Animation of back")
-            self.back_comboBox.clear()
-            if self.main_window.animation_back_move_btn:
-                self.back_comboBox.addItem("Yes")
-                self.back_comboBox.addItem("No")
-            else:
-                self.back_comboBox.addItem("No")
-                self.back_comboBox.addItem("Yes")
 
 
-class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
+class PlayScreen(QMainWindow, Ui_MainWindow_Play):
     def __init__(self, app_):
         super().__init__()
         self.initUI(app_)
@@ -712,12 +644,93 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
         self.info.exec_()
 
 
+class SettingsScreen(QMainWindow, Ui_MainWindow_Settings):
+    def __init__(self, app_, main_window):
+        super().__init__()
+        self.initUI(app_, main_window)
+
+    def initUI(self, app_, main_window):
+        self.setupUi(self)
+        self.app = app_
+        self.main_window = main_window
+        self.back_btn.clicked.connect(self.back_to_menu)
+        self.speed_spin_box.setValue(self.main_window.speed_of_play_buttons)
+        self.speed_spin_box.valueChanged.connect(self.refresh_speed_value)
+        self.language_comboBox.activated[str].connect(self.change_language)
+        self.language_comboBox.addItem("English")
+        self.language_comboBox.addItem("Русский")
+        self.back_comboBox.activated[str].connect(self.back_animation_refresh)
+        self.refresh_language()
+
+    def back_to_menu(self):
+        btn = self.back_btn
+        if self.sender() == btn:
+            # анимация
+            if self.main_window.volume_is_on:
+                self.main_window.sound_buttons.play()
+            btn.setStyleSheet(f"image: url(images/buttons_{self.main_window.language}/back_pushed.png);"
+                              "border-radius: 10 px;")
+            self.app.processEvents()
+            sleep(0.1)
+            btn.setStyleSheet(f"image: url(images/buttons_{self.main_window.language}/back_not_pushed.png);"
+                              "border-radius: 10 px;")
+            self.app.processEvents()
+        windows.setCurrentIndex(0)
+
+    def refresh_speed_value(self):
+        self.main_window.speed_of_play_buttons = self.speed_spin_box.value()
+
+    def change_language(self, text):
+        if text == "Русский":
+            self.main_window.language = "ru"
+        elif text == "English":
+            self.main_window.language = "us"
+        self.main_window.refresh_language()
+        self.refresh_language()
+
+    def back_animation_refresh(self, text):
+        self.main_window.animation_back_move_btn = (text == "Yes" or text == "Да")
+
+    def refresh_language(self):
+        self.back_btn.setStyleSheet(f"image: url(images/buttons_{self.main_window.language}/back_not_pushed.png);"
+                                    "border-radius: 10 px;")
+
+        if self.main_window.language == "ru":
+            self.settings_label.setText("Настройки")
+            self.speed_label.setText("Скорость")
+            self.language_label.setText("Язык")
+            self.back_move_label.setText("Анимация хода назад")
+            self.language_label.setText("Язык")
+            self.back_comboBox.clear()
+            if self.main_window.animation_back_move_btn:
+                self.back_comboBox.addItem("Да")
+                self.back_comboBox.addItem("Нет")
+            else:
+                self.back_comboBox.addItem("Нет")
+                self.back_comboBox.addItem("Да")
+        elif self.main_window.language == "us":
+            self.settings_label.setText("Settings")
+            self.speed_label.setText("Speed")
+            self.language_label.setText("Language")
+            self.back_move_label.setText("Animation of back")
+            self.back_comboBox.clear()
+            if self.main_window.animation_back_move_btn:
+                self.back_comboBox.addItem("Yes")
+                self.back_comboBox.addItem("No")
+            else:
+                self.back_comboBox.addItem("No")
+                self.back_comboBox.addItem("Yes")
+
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    play_screen = BarleyBreakMainWindow(app)
+    play_screen = PlayScreen(app)
     settings_screen = SettingsScreen(app, play_screen)
+    start_screen = StartScreen(app, play_screen)
 
     windows = QStackedWidget()
+    windows.closeEvent = play_screen.closeEvent
+    windows.addWidget(start_screen)
     windows.addWidget(play_screen)
     windows.addWidget(settings_screen)
     windows.setWindowIcon(QIcon("images/icons/icon.png"))

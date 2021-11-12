@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'BarleyBreakSettingsWindow.ui'
+# Form implementation generated from reading ui file 'SettingsScreen.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -11,22 +11,22 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Form(object):
-    def setupUi(self, Form):
-        Form.setObjectName("Form")
-        Form.resize(1090, 665)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(Form.sizePolicy().hasHeightForWidth())
-        Form.setSizePolicy(sizePolicy)
-        Form.setLayoutDirection(QtCore.Qt.LeftToRight)
-        Form.setStyleSheet("background-color: rgb(149, 181, 255);")
-        self.label = QtWidgets.QLabel(Form)
+class Ui_MainWindow_Settings(object):
+    def setupUi(self, MainWindow_Settings):
+        MainWindow_Settings.setObjectName("MainWindow_Settings")
+        MainWindow_Settings.resize(1063, 685)
+        MainWindow_Settings.setStyleSheet("background-color: rgb(149, 181, 255);")
+        self.centralwidget = QtWidgets.QWidget(MainWindow_Settings)
+        self.centralwidget.setObjectName("centralwidget")
+        self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(0, 0, 1101, 701))
         self.label.setText("")
         self.label.setObjectName("label")
-        self.gridLayoutWidget = QtWidgets.QWidget(Form)
+        self.back_btn = QtWidgets.QPushButton(self.centralwidget)
+        self.back_btn.setGeometry(QtCore.QRect(60, 50, 191, 111))
+        self.back_btn.setText("")
+        self.back_btn.setObjectName("back_btn")
+        self.gridLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.gridLayoutWidget.setGeometry(QtCore.QRect(120, 190, 821, 331))
         self.gridLayoutWidget.setObjectName("gridLayoutWidget")
         self.gridLayout = QtWidgets.QGridLayout(self.gridLayoutWidget)
@@ -117,11 +117,7 @@ class Ui_Form(object):
 "padding: 5px;")
         self.language_comboBox.setObjectName("language_comboBox")
         self.gridLayout.addWidget(self.language_comboBox, 1, 1, 1, 1)
-        self.back_btn = QtWidgets.QPushButton(Form)
-        self.back_btn.setGeometry(QtCore.QRect(60, 50, 191, 111))
-        self.back_btn.setText("")
-        self.back_btn.setObjectName("back_btn")
-        self.settings_label = QtWidgets.QLabel(Form)
+        self.settings_label = QtWidgets.QLabel(self.centralwidget)
         self.settings_label.setGeometry(QtCore.QRect(310, 40, 481, 121))
         font = QtGui.QFont()
         font.setFamily("Comic Sans MS")
@@ -129,14 +125,15 @@ class Ui_Form(object):
         self.settings_label.setFont(font)
         self.settings_label.setAlignment(QtCore.Qt.AlignCenter)
         self.settings_label.setObjectName("settings_label")
+        MainWindow_Settings.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(Form)
-        QtCore.QMetaObject.connectSlotsByName(Form)
+        self.retranslateUi(MainWindow_Settings)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow_Settings)
 
-    def retranslateUi(self, Form):
+    def retranslateUi(self, MainWindow_Settings):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Settings"))
-        self.language_label.setText(_translate("Form", "Language"))
-        self.back_move_label.setText(_translate("Form", "Animation of back"))
-        self.speed_label.setText(_translate("Form", "Speed"))
-        self.settings_label.setText(_translate("Form", "Settings"))
+        MainWindow_Settings.setWindowTitle(_translate("MainWindow_Settings", "MainWindow"))
+        self.language_label.setText(_translate("MainWindow_Settings", "Language"))
+        self.back_move_label.setText(_translate("MainWindow_Settings", "Animation of back"))
+        self.speed_label.setText(_translate("MainWindow_Settings", "Speed"))
+        self.settings_label.setText(_translate("MainWindow_Settings", "Settings"))
