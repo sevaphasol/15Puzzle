@@ -1,6 +1,6 @@
 import sys
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QMessageBox, QStackedWidget
 from PyQt5.Qt import QParallelAnimationGroup, QStatusBar, QFont
 from PyQt5.QtCore import QTimer, QPropertyAnimation, QPoint
 from PyQt5.QtGui import QIcon
@@ -50,7 +50,7 @@ class SettingsScreen(QWidget, Ui_Form):
             btn.setStyleSheet(f"image: url(images/buttons_{self.main_window.language}/back_not_pushed.png);"
                               "border-radius: 10 px;")
             self.app.processEvents()
-        self.close()
+        windows.setCurrentIndex(0)
 
     def refresh_speed_value(self):
         self.main_window.speed_of_play_buttons = self.speed_spin_box.value()
@@ -718,8 +718,7 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
         btn = self.sender()  # для анимации
         if btn == self.settings_btn:
             self.animation_of_button(btn)
-        self.settings_form = SettingsScreen(app, self)
-        self.settings_form.show()
+        windows.setCurrentIndex(1)
 
     def show_dialog(self):
         btn = self.sender()
@@ -730,6 +729,12 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = BarleyBreakMainWindow(app)
-    ex.show()
-    sys.exit(app.exec_())
+    play_screen = BarleyBreakMainWindow(app)
+    settings_screen = SettingsScreen(app, play_screen)
+
+    windows = QStackedWidget()
+    windows.addWidget(play_screen)
+    windows.addWidget(settings_screen)
+
+    windows.show()
+    sys.exit(app.exec())
