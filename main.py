@@ -361,12 +361,7 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
         self.cur.execute('''
         SELECT time, steps FROM score ORDER BY time LIMIT 3
         ''')
-
         times = self.cur.fetchall()
-        print(times)
-        # self.times.append(tms)
-        # self.times.sort()
-        # self.times = self.times[:3]
         answer = ['\n']
         for i in range(len(times)):
             tms, steps = times[i]
