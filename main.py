@@ -7,8 +7,8 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtMultimedia import QSound
 import sqlite3
 
-from BarleyBreakMainWindow import Ui_MainWindow
-from BarleyBreakSettingsWindow import Ui_Form
+from ui.BarleyBreakMainWindow import Ui_MainWindow
+from ui.BarleyBreakSettingsWindow import Ui_Form
 
 from time import sleep, time
 from random import shuffle, randint
