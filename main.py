@@ -5,6 +5,7 @@ from PyQt5.Qt import QParallelAnimationGroup, QStatusBar, QFont
 from PyQt5.QtCore import QTimer, QPropertyAnimation, QPoint
 from PyQt5.QtGui import QIcon
 from PyQt5.QtMultimedia import QSound
+import sqlite3
 
 from BarleyBreakMainWindow import Ui_MainWindow
 from BarleyBreakSettingsWindow import Ui_Form
@@ -16,7 +17,9 @@ from random import shuffle, randint
 class SettingsScreen(QWidget, Ui_Form):
     def __init__(self, app_, main_window):
         super().__init__()
+        self.initUI(app_, main_window)
 
+    def initUI(self, app_, main_window):
         self.setupUi(self)
         self.app = app_
 
@@ -97,7 +100,9 @@ class SettingsScreen(QWidget, Ui_Form):
 class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, app_):
         super().__init__()
+        self.initUI(app_)
 
+    def initUI(self, app_):
         self.setupUi(self)
         self.app = app_
 
@@ -149,6 +154,14 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
         self.setStatusBar(self.statusBar)
         self.statusBar.clearMessage()
         self.statusBar.setFont(QFont("Comic Sans MS", 10))
+
+        self.con = sqlite3.connect("my_game.sqlite3")
+        self.cur = self.con.cursor()
+        self.cur.execute("""
+                CREATE TABLE IF NOT EXISTS score
+                ([id] INTEGER PRIMARY KEY AUTOINCREMENT, [time] INTEGER, [steps] INTEGER)
+                """)
+        self.con.commit()
 
         self.animation_back_move_btn = False
 
@@ -218,6 +231,11 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
 
         self.refresh_language()
 
+    def closeEvent(self, event):
+        self.clear_bd()
+        self.con.close()
+        event.accept()
+
     def refresh_language(self):
         # картинки для каждой кнопки на первом месте если она нажата на втором если не нажата
         # для рестарта и звука есть два положения для рестарта старт и рестарт для звук включен и выключен
@@ -268,7 +286,7 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
         self.tips_btn.setStyleSheet(f"image: url(images/buttons_{self.language}/tips_not_pushed.png);"
                                     "border-radius: 10 px;")
         self.back_move_btn.setStyleSheet(f"image: url(images/buttons_{self.language}/back_move_not_pushed.png);"
-                                   "border-radius: 10 px;")
+                                         "border-radius: 10 px;")
         self.you_win_label.setStyleSheet(f"image: url(images/instant_images_{self.language}/you_win.png);")
         if self.language == "ru":
             self.score_label.setText("Результаты")
@@ -280,6 +298,12 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
             self.steps_label_2.setText("Steps:")
             self.info.setText(self.tips[1])
             self.info.setWindowTitle("Tips")
+
+    def clear_bd(self):
+        self.cur.execute("""
+        DELETE FROM score
+        """)
+        self.con.commit()
 
     def sound(self):
         if self.volume_is_on:  # если звук включен проигрываем звук
@@ -340,13 +364,22 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
         # обновляем поле со временем всех прохождений
         t = t.split(':')
         tms = (int(t[0]) * 60 + int(t[1])) * 100 + int(t[2])
-        self.times.append(tms)
-        self.times.sort()
-        self.times = self.times[:3]
+        self.cur.execute(f'''
+        INSERT INTO score(time, steps) VALUES({tms}, {self.count_of_steps}) 
+        ''')
+        self.con.commit()
+        self.cur.execute('''
+        SELECT time, steps FROM score ORDER BY time LIMIT 3
+        ''')
+
+        times = self.cur.fetchall()
+        print(times)
+        # self.times.append(tms)
+        # self.times.sort()
+        # self.times = self.times[:3]
         answer = ['\n']
-        for i in range(len(self.times)):
-            pass
-            tms = self.times[i]
+        for i in range(len(times)):
+            tms, steps = times[i]
             m = tms // 6000
             s = (tms // 100) % 60
             ms = tms - (m * 60 + s) * 100
@@ -354,7 +387,7 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
             answer.append(f"  {i + 1}.{'0' * (2 - len(m)) + m}:"
                           f"{'0' * (2 - len(s)) + s}:"
                           f"{'0' * (2 - len(ms)) + ms} \n"
-                          f"  {self.count_of_steps} steps  \n")
+                          f"  {steps} steps  \n")
         self.time_table.setText("".join(answer))
 
     def start_timer(self):
@@ -471,13 +504,13 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
                         self.count_of_steps += 1
                     elif len(buttons) == 2:
                         self.field[pos_of_btn], self.field[pos_of_btn + step], \
-                            self.field[pos_of_btn + 2 * step] = \
+                        self.field[pos_of_btn + 2 * step] = \
                             self.field[pos_of_empty_btn], self.field[pos_of_btn], \
                             self.field[pos_of_btn + step]
                         self.count_of_steps += 2
                     elif len(buttons) == 3:
                         self.field[pos_of_btn], self.field[pos_of_btn + step], \
-                            self.field[pos_of_btn + 2 * step], self.field[pos_of_btn + 3 * step] = \
+                        self.field[pos_of_btn + 2 * step], self.field[pos_of_btn + 3 * step] = \
                             self.field[pos_of_empty_btn], self.field[pos_of_btn], \
                             self.field[pos_of_btn + step], self.field[pos_of_btn + 2 * step]
                         self.count_of_steps += 3
@@ -504,13 +537,13 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
                         self.count_of_steps += 1
                     elif len(buttons) == 2:
                         self.field[pos_of_btn], self.field[pos_of_btn + step], \
-                            self.field[pos_of_btn + 2 * step] = \
+                        self.field[pos_of_btn + 2 * step] = \
                             self.field[pos_of_empty_btn], self.field[pos_of_btn], \
                             self.field[pos_of_btn + step]
                         self.count_of_steps += 2
                     elif len(buttons) == 3:
                         self.field[pos_of_btn], self.field[pos_of_btn + step], \
-                            self.field[pos_of_btn + 2 * step], self.field[pos_of_btn + 3 * step] = \
+                        self.field[pos_of_btn + 2 * step], self.field[pos_of_btn + 3 * step] = \
                             self.field[pos_of_empty_btn], self.field[pos_of_btn], \
                             self.field[pos_of_btn + step], self.field[pos_of_btn + 2 * step]
                         self.count_of_steps += 3
@@ -557,7 +590,8 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
                             self.empty.move(x2, y2)
                             btn_index = self.field.index(button)
                             empty_index = self.field.index(self.empty)
-                            self.field[btn_index], self.field[empty_index] = self.field[empty_index], self.field[btn_index]
+                            self.field[btn_index], self.field[empty_index] = self.field[empty_index], self.field[
+                                btn_index]
                             self.count_of_steps -= 1
                     else:
                         animation_group = QParallelAnimationGroup(self)
@@ -571,7 +605,8 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
                             self.empty.move(x2, y2)
                             btn_index = self.field.index(button)
                             empty_index = self.field.index(self.empty)
-                            self.field[btn_index], self.field[empty_index] = self.field[empty_index], self.field[btn_index]
+                            self.field[btn_index], self.field[empty_index] = self.field[empty_index], self.field[
+                                btn_index]
                             self.count_of_steps -= 1
                         animation_group.start()
                     self.display_steps()
@@ -605,6 +640,7 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
         self.times = []
         self.time_table.setText('')
         self.count_of_steps = 0
+        self.clear_bd()
         self.display_steps()
         self.restart_btn.setStyleSheet(f"image: url(images/buttons_{self.language}/start_not_pushed.png);"
                                        "border-radius: 10 px;")
@@ -635,6 +671,7 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
         self.count_of_steps = 0
         self.game_is_started = True
         self.display_steps()
+        self.moves.clear()
         self.progressBar.setValue(0)
         is_generated = False
         while not is_generated:
