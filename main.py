@@ -22,12 +22,7 @@ class SettingsScreen(QWidget, Ui_Form):
     def initUI(self, app_, main_window):
         self.setupUi(self)
         self.app = app_
-
         self.main_window = main_window
-
-        self.setWindowIcon(QIcon("images/icons/icon_settings.png"))
-        self.setFixedSize(1063, 685)  # нельзя менять размер
-
         self.back_btn.clicked.connect(self.back_to_menu)
         self.speed_spin_box.setValue(self.main_window.speed_of_play_buttons)
         self.speed_spin_box.valueChanged.connect(self.refresh_speed_value)
@@ -105,12 +100,7 @@ class BarleyBreakMainWindow(QMainWindow, Ui_MainWindow):
     def initUI(self, app_):
         self.setupUi(self)
         self.app = app_
-
-        self.setWindowIcon(QIcon("images/icons/icon.png"))
-        self.setFixedSize(1063, 685)  # нельзя менять размер
-
         self.language = "us"
-
         self.info = QMessageBox()
         self.ok = self.info.addButton(QMessageBox.Ok)
         self.ok.setFont(QFont("Comic Sans MS", 10))
@@ -735,6 +725,9 @@ if __name__ == '__main__':
     windows = QStackedWidget()
     windows.addWidget(play_screen)
     windows.addWidget(settings_screen)
+    windows.setWindowIcon(QIcon("images/icons/icon.png"))
+    windows.setWindowTitle("15Puzzle")
+    windows.setFixedSize(1063, 685)
 
     windows.show()
     sys.exit(app.exec())
