@@ -219,6 +219,9 @@ padding: 5px;</string>
       <height>101</height>
      </rect>
     </property>
+    <property name="cursor">
+     <cursorShape>CrossCursor</cursorShape>
+    </property>
     <property name="styleSheet">
      <string notr="true">border: none;</string>
     </property>

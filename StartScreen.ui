@@ -97,10 +97,10 @@
    <widget class="QLabel" name="label_gif1">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>140</y>
-      <width>271</width>
-      <height>461</height>
+      <x>10</x>
+      <y>40</y>
+      <width>341</width>
+      <height>621</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -114,10 +114,10 @@ border-radius: 10px;</string>
    <widget class="QLabel" name="label_gif2">
     <property name="geometry">
      <rect>
-      <x>770</x>
-      <y>140</y>
-      <width>271</width>
-      <height>461</height>
+      <x>720</x>
+      <y>40</y>
+      <width>331</width>
+      <height>621</height>
      </rect>
     </property>
     <property name="styleSheet">

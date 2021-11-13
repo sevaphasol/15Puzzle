@@ -13,6 +13,7 @@ from StartScreen import Ui_MainWindow_Start
 
 from time import sleep, time
 from random import shuffle, randint
+from os import path
 
 
 class StartScreen(QMainWindow, Ui_MainWindow_Start):
@@ -49,10 +50,15 @@ class StartScreen(QMainWindow, Ui_MainWindow_Start):
         self.main_window.con = sqlite3.connect("my_game.sqlite3")
         self.main_window.cur = self.main_window.con.cursor()
         self.main_window.cur.execute("""
+                DELETE FROM score
+                """)
+        self.main_window.con.commit()
+        self.main_window.cur.execute("""
                         CREATE TABLE IF NOT EXISTS score
                         ([id] INTEGER PRIMARY KEY AUTOINCREMENT, [time] INTEGER, [steps] INTEGER)
                         """)
         self.main_window.con.commit()
+        self.main_window.update_time_table(False)
         windows.setCurrentIndex(1)
 
     def resume_game(self):
@@ -71,11 +77,38 @@ class StartScreen(QMainWindow, Ui_MainWindow_Start):
         file_path = QFileDialog.getOpenFileName(
             self, 'Выбрать игру', '',
             'БД (*.sqlite3)')[0]
-        if len(file_path):
-            self.main_window.con = sqlite3.connect(file_path)
+        my_game_path = ''
+        backslash = r"\ "
+        for i in path.abspath("my_game.sqlite3"):
+            if i == backslash[0]:
+                i = "/"
+            my_game_path += i
+        if file_path == my_game_path:
+            warning = QMessageBox()
+            warning.setIcon(QMessageBox.Warning)
+            if self.main_window.language == "us":
+                warning.setWindowTitle("Error")
+            elif self.main_window.language == "ru":
+                warning.setWindowTitle("Ошибка")
+            ok = warning.addButton(QMessageBox.Ok)
+            ok.setFont(QFont("Comic Sans MS", 10))
+            ok.setStyleSheet("background-color: rgb(210, 217, 255);")
+            ok.clicked.connect(self.main_window.sound)
+            warning.setStyleSheet("background-color: rgb(149, 181, 255);")
+            warning.setFont(QFont("Comic Sans MS", 10))
+            if self.main_window.language == "us":
+                warning.setText(self.main_window.warnings[0])
+            if self.main_window.language == "ru":
+                warning.setText(self.main_window.warnings[1])
+            warning.exec_()
+        elif len(file_path) != 0:
+            self.main_window.opened_con = sqlite3.connect(file_path)
+            self.main_window.con = sqlite3.connect("my_game.sqlite3")
+            self.main_window.opened_con.backup(target=self.main_window.con)
             self.main_window.cur = self.main_window.con.cursor()
-            windows.setCurrentIndex(1)
+            self.main_window.opened_cur = self.main_window.opened_con.cursor()
             self.main_window.update_time_table(False)
+            windows.setCurrentIndex(1)
 
     def open_settings(self):
         btn = self.settings_btn
@@ -158,6 +191,7 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
                      "With the sound button you can turn the sound on or off.\n"
                      "The settings button redirects you to the settings where you can set various parameters.\n"
                      "Good luck have fun!"]
+        self.warnings = ["Try another name", "Попробуйте другое имя"]
 
         self.statusBar = QStatusBar()
         self.setStatusBar(self.statusBar)
@@ -743,8 +777,33 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
         file_path = QFileDialog.getSaveFileName(
             self, 'Выбрать картинку', '',
             'БД (*.sqlite3)')[0]
-        self.con2 = sqlite3.connect(file_path)
-        self.con.backup(target=self.con2)
+        my_game_path = ''
+        backslash = r"\ "
+        for i in path.abspath("my_game.sqlite3"):
+            if i == backslash[0]:
+                i = "/"
+            my_game_path += i
+        if file_path == my_game_path:
+            warning = QMessageBox()
+            warning.setIcon(QMessageBox.Warning)
+            if self.language == "us":
+                warning.setWindowTitle("Error")
+            elif self.language == "ru":
+                warning.setWindowTitle("Ошибка")
+            ok = warning.addButton(QMessageBox.Ok)
+            ok.setFont(QFont("Comic Sans MS", 10))
+            ok.setStyleSheet("background-color: rgb(210, 217, 255);")
+            ok.clicked.connect(self.sound)
+            warning.setStyleSheet("background-color: rgb(149, 181, 255);")
+            warning.setFont(QFont("Comic Sans MS", 10))
+            if self.language == "us":
+                warning.setText(self.warnings[0])
+            if self.language == "ru":
+                warning.setText(self.warnings[1])
+            warning.exec_()
+        elif len(file_path) != 0:
+            self.con2 = sqlite3.connect(file_path)
+            self.con.backup(target=self.con2)
 
 
 class SettingsScreen(QMainWindow, Ui_MainWindow_Settings):

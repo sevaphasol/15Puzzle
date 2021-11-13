@@ -127,6 +127,7 @@ class Ui_MainWindow_Settings(object):
         self.settings_label.setObjectName("settings_label")
         self.cheat_button = QtWidgets.QPushButton(self.centralwidget)
         self.cheat_button.setGeometry(QtCore.QRect(960, 10, 91, 101))
+        self.cheat_button.setCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
         self.cheat_button.setStyleSheet("border: none;")
         self.cheat_button.setText("")
         self.cheat_button.setObjectName("cheat_button")

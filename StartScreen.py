@@ -44,13 +44,13 @@ class Ui_MainWindow_Start(object):
         self.settings_btn.setText("")
         self.settings_btn.setObjectName("settings_btn")
         self.label_gif1 = QtWidgets.QLabel(self.centralwidget)
-        self.label_gif1.setGeometry(QtCore.QRect(30, 140, 271, 461))
+        self.label_gif1.setGeometry(QtCore.QRect(10, 40, 341, 621))
         self.label_gif1.setStyleSheet("background-color: rgb(210, 217, 255);\n"
 "border-radius: 10px;")
         self.label_gif1.setText("")
         self.label_gif1.setObjectName("label_gif1")
         self.label_gif2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_gif2.setGeometry(QtCore.QRect(770, 140, 271, 461))
+        self.label_gif2.setGeometry(QtCore.QRect(720, 40, 331, 621))
         self.label_gif2.setStyleSheet("background-color: rgb(210, 217, 255);\n"
 "border-radius: 10px;\n"
 "")
