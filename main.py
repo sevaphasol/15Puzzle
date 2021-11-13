@@ -1,6 +1,6 @@
 import sys
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QLabel
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget, QFileDialog
 from PyQt5.Qt import QParallelAnimationGroup, QStatusBar, QFont
 from PyQt5.QtCore import QTimer, QPropertyAnimation, QPoint
 from PyQt5.QtGui import QIcon
@@ -117,6 +117,7 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
         self.setupUi(self)
         self.app = app_
         self.language = "us"
+        self.cheats_on = False
         self.need_to_clear = True
         self.previousIndex = 0
         self.info = QMessageBox()
@@ -442,7 +443,7 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
     def checking(self):
         """проверка выиграл ли игрок"""
         if self.field == [self.l1, self.l2, self.l3, self.l4, self.l5, self.l6, self.l7, self.l8, self.l9,
-                          self.l10, self.l11, self.l12, self.l13, self.l14, self.l15, self.empty]:
+                          self.l10, self.l11, self.l12, self.l13, self.l14, self.l15, self.empty] or self.cheats_on:
             if self.volume_is_on:
                 self.win_sound.play()
             self.won = True
@@ -556,6 +557,7 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
                         self.statusBar.showMessage("You can't move this button")
                     elif self.language == "ru":
                         self.statusBar.showMessage("Эта кнопка недоступна для движения")
+                self.sound_play_buttons.play()
                 self.display_steps()
                 self.checking_for_progress_bar()
                 self.checking()
@@ -762,6 +764,7 @@ class SettingsScreen(QMainWindow, Ui_MainWindow_Settings):
         self.language_comboBox.addItem("English")
         self.language_comboBox.addItem("Русский")
         self.back_comboBox.activated[str].connect(self.back_animation_refresh)
+        self.cheat_button.clicked.connect(self.cheats)
         self.refresh_language()
 
     def back_to_menu(self):
@@ -794,14 +797,15 @@ class SettingsScreen(QMainWindow, Ui_MainWindow_Settings):
         self.main_window.refresh_language()
         self.start_window.refresh_language()
 
-
     def back_animation_refresh(self, text):
         self.main_window.animation_back_move_btn = (text == "Yes" or text == "Да")
+
+    def cheats(self):
+        self.main_window.cheats_on = not self.main_window.cheats_on
 
     def refresh_language(self):
         self.back_btn.setStyleSheet(f"image: url(images/buttons_{self.main_window.language}/back_not_pushed.png);"
                                     "border-radius: 10 px;")
-
         if self.main_window.language == "ru":
             self.settings_label.setText("Настройки")
             self.speed_label.setText("Скорость")
