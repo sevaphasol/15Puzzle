@@ -85,7 +85,7 @@ class Ui_MainWindow_Settings(object):
         self.back_move_label = QtWidgets.QLabel(self.gridLayoutWidget)
         font = QtGui.QFont()
         font.setFamily("Comic Sans MS")
-        font.setPointSize(26)
+        font.setPointSize(24)
         self.back_move_label.setFont(font)
         self.back_move_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.back_move_label.setObjectName("back_move_label")
@@ -134,6 +134,6 @@ class Ui_MainWindow_Settings(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow_Settings.setWindowTitle(_translate("MainWindow_Settings", "MainWindow"))
         self.language_label.setText(_translate("MainWindow_Settings", "Language"))
-        self.back_move_label.setText(_translate("MainWindow_Settings", "Animation of back"))
+        self.back_move_label.setText(_translate("MainWindow_Settings", "Backtrack animation"))
         self.speed_label.setText(_translate("MainWindow_Settings", "Speed"))
         self.settings_label.setText(_translate("MainWindow_Settings", "Settings"))

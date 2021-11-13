@@ -134,11 +134,11 @@ font-weight: bold;
        <property name="font">
         <font>
          <family>Comic Sans MS</family>
-         <pointsize>26</pointsize>
+         <pointsize>24</pointsize>
         </font>
        </property>
        <property name="text">
-        <string>Animation of back</string>
+        <string>Backtrack animation</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

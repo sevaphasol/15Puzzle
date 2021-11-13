@@ -1,6 +1,6 @@
 import sys
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget, QFileDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QLabel
 from PyQt5.Qt import QParallelAnimationGroup, QStatusBar, QFont
 from PyQt5.QtCore import QTimer, QPropertyAnimation, QPoint
 from PyQt5.QtGui import QIcon
@@ -27,8 +27,25 @@ class StartScreen(QMainWindow, Ui_MainWindow_Start):
         self.resume_game_btn.clicked.connect(self.resume_game)
         self.settings_btn.clicked.connect(self.open_settings)
         self.main_window = main_window
+        self.refresh_language()
+        self.label_gif1.setStyleSheet("image: url(images/other_images/left.png);"
+                                      "border-radius: 10 px;")
+        self.label_gif2.setStyleSheet("image: url(images/other_images/right.png);"
+                                      "border-radius: 10 px;")
 
     def new_game(self):
+        btn = self.new_game_btn
+        if self.sender() == btn:
+            if self.main_window.volume_is_on:
+                self.main_window.sound_buttons.play()
+            btn.setStyleSheet(f"image: url(images/buttons_{self.main_window.language}/new_game_pushed.png);"
+                              "border-radius: 10 px;")
+            self.app.processEvents()
+            sleep(0.1)
+            btn.setStyleSheet(f"image: url(images/buttons_{self.main_window.language}/new_game_not_pushed.png);"
+                              "border-radius: 10 px;")
+            self.app.processEvents()
+        self.main_window.need_to_clear = True
         self.main_window.con = sqlite3.connect("my_game.sqlite3")
         self.main_window.cur = self.main_window.con.cursor()
         self.main_window.cur.execute("""
@@ -39,6 +56,18 @@ class StartScreen(QMainWindow, Ui_MainWindow_Start):
         windows.setCurrentIndex(1)
 
     def resume_game(self):
+        btn = self.resume_game_btn
+        if self.sender() == btn:
+            if self.main_window.volume_is_on:
+                self.main_window.sound_buttons.play()
+            btn.setStyleSheet(f"image: url(images/buttons_{self.main_window.language}/resume_pushed.png);"
+                              "border-radius: 10 px;")
+            self.app.processEvents()
+            sleep(0.1)
+            btn.setStyleSheet(f"image: url(images/buttons_{self.main_window.language}/resume_not_pushed.png);"
+                              "border-radius: 10 px;")
+            self.app.processEvents()
+        self.main_window.need_to_clear = False
         file_path = QFileDialog.getOpenFileName(
             self, 'Выбрать игру', '',
             'БД (*.sqlite3)')[0]
@@ -46,13 +75,37 @@ class StartScreen(QMainWindow, Ui_MainWindow_Start):
             self.main_window.con = sqlite3.connect(file_path)
             self.main_window.cur = self.main_window.con.cursor()
             windows.setCurrentIndex(1)
+            self.main_window.update_time_table(False)
 
     def open_settings(self):
+        btn = self.settings_btn
+        if self.sender() == btn:
+            if self.main_window.volume_is_on:
+                self.main_window.sound_buttons.play()
+            btn.setStyleSheet(f"image: url(images/buttons_{self.main_window.language}/settings_pushed.png);"
+                              "border-radius: 10 px;")
+            self.app.processEvents()
+            sleep(0.1)
+            btn.setStyleSheet(f"image: url(images/buttons_{self.main_window.language}/settings_not_pushed.png);"
+                              "border-radius: 10 px;")
+            self.app.processEvents()
         self.main_window.previousIndex = 0
         windows.setCurrentIndex(2)
 
     def refresh_language(self):
-        pass
+        self.new_game_btn.setStyleSheet(f"image: url(images/buttons_{self.main_window.language}"
+                                        f"/new_game_not_pushed.png);"
+                                        "border-radius: 10 px;")
+        self.resume_game_btn.setStyleSheet(f"image: url(images/buttons_{self.main_window.language}"
+                                           f"/resume_not_pushed.png);"
+                                           "border-radius: 10 px;")
+        self.settings_btn.setStyleSheet(f"image: url(images/buttons_{self.main_window.language}/"
+                                        f"settings_not_pushed.png);"
+                                        "border-radius: 10 px;")
+        if self.main_window.language == "us":
+            self.heading_label.setText("15Puzzle")
+        elif self.main_window.language == "ru":
+            self.heading_label.setText("Пятнашки")
 
 
 class PlayScreen(QMainWindow, Ui_MainWindow_Play):
@@ -64,6 +117,7 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
         self.setupUi(self)
         self.app = app_
         self.language = "us"
+        self.need_to_clear = True
         self.previousIndex = 0
         self.info = QMessageBox()
         self.ok = self.info.addButton(QMessageBox.Ok)
@@ -108,14 +162,6 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
         self.setStatusBar(self.statusBar)
         self.statusBar.clearMessage()
         self.statusBar.setFont(QFont("Comic Sans MS", 10))
-
-        self.con = sqlite3.connect("my_game.sqlite3")
-        self.cur = self.con.cursor()
-        self.cur.execute("""
-                CREATE TABLE IF NOT EXISTS score
-                ([id] INTEGER PRIMARY KEY AUTOINCREMENT, [time] INTEGER, [steps] INTEGER)
-                """)
-        self.con.commit()
 
         self.animation_back_move_btn = False
 
@@ -188,8 +234,9 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
         self.refresh_language()
 
     def closeEvent(self, event):
-        self.clear_bd()
-        self.con.close()
+        if self.need_to_clear:
+            self.clear_bd()
+            self.con.close()
         event.accept()
 
     def refresh_language(self):
@@ -217,7 +264,7 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
                        self.back_move_btn: (f"images/buttons_{self.language}/back_move_pushed.png",
                                             f"images/buttons_{self.language}/back_move_not_pushed.png"),
                        self.back_menu_btn: (f"images/buttons_{self.language}/back_pushed.png",
-                                            f"images/buttons_{self.language}/back_not_pushed.png")
+                                            f"images/buttons_{self.language}/back_not_pushed.png"),
                        }
 
         # ставим картинки на кнопки
@@ -323,12 +370,13 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
 
     def update_time_table(self, t):
         # обновляем поле со временем всех прохождений
-        t = t.split(':')
-        tms = (int(t[0]) * 60 + int(t[1])) * 100 + int(t[2])
-        self.cur.execute(f'''
-        INSERT INTO score(time, steps) VALUES({tms}, {self.count_of_steps}) 
-        ''')
-        self.con.commit()
+        if t:
+            t = t.split(':')
+            tms = (int(t[0]) * 60 + int(t[1])) * 100 + int(t[2])
+            self.cur.execute(f'''
+            INSERT INTO score(time, steps) VALUES({tms}, {self.count_of_steps}) 
+            ''')
+            self.con.commit()
         self.cur.execute('''
         SELECT time, steps FROM score ORDER BY time LIMIT 3
         ''')
@@ -771,7 +819,7 @@ class SettingsScreen(QMainWindow, Ui_MainWindow_Settings):
             self.settings_label.setText("Settings")
             self.speed_label.setText("Speed")
             self.language_label.setText("Language")
-            self.back_move_label.setText("Animation of back")
+            self.back_move_label.setText("Backtrack animation")
             self.back_comboBox.clear()
             if self.main_window.animation_back_move_btn:
                 self.back_comboBox.addItem("Yes")
@@ -786,7 +834,6 @@ if __name__ == '__main__':
     play_screen = PlayScreen(app)
     start_screen = StartScreen(app, play_screen)
     settings_screen = SettingsScreen(app, play_screen, start_screen)
-
 
     windows = QStackedWidget()
     windows.closeEvent = play_screen.closeEvent
