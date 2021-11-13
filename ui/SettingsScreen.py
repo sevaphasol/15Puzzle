@@ -37,7 +37,7 @@ class Ui_MainWindow_Settings(object):
         font.setFamily("Comic Sans MS")
         font.setPointSize(36)
         self.language_label.setFont(font)
-        self.language_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.language_label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.language_label.setObjectName("language_label")
         self.gridLayout.addWidget(self.language_label, 1, 0, 1, 1)
         self.back_comboBox = QtWidgets.QComboBox(self.gridLayoutWidget)
@@ -53,10 +53,10 @@ class Ui_MainWindow_Settings(object):
         font.setWeight(75)
         self.back_comboBox.setFont(font)
         self.back_comboBox.setStyleSheet("border: 2px solid grey;\n"
-"background-color: rgb(87, 96, 134);\n"
-"color:  rgb(255, 255, 255);\n"
-"font-weight: bold;\n"
-"padding: 5px;")
+                                         "background-color: rgb(87, 96, 134);\n"
+                                         "color:  rgb(255, 255, 255);\n"
+                                         "font-weight: bold;\n"
+                                         "padding: 5px;")
         self.back_comboBox.setObjectName("back_comboBox")
         self.gridLayout.addWidget(self.back_comboBox, 2, 1, 1, 1)
         self.speed_spin_box = QtWidgets.QSpinBox(self.gridLayoutWidget)
@@ -72,11 +72,11 @@ class Ui_MainWindow_Settings(object):
         font.setWeight(75)
         self.speed_spin_box.setFont(font)
         self.speed_spin_box.setStyleSheet("border: 2px solid grey;\n"
-"background-color:   rgb(87, 96, 134);\n"
-"padding: 5px;\n"
-"color: white;\n"
-"font-weight: bold;\n"
-"")
+                                          "background-color:   rgb(87, 96, 134);\n"
+                                          "padding: 5px;\n"
+                                          "color: white;\n"
+                                          "font-weight: bold;\n"
+                                          "")
         self.speed_spin_box.setMinimum(1)
         self.speed_spin_box.setMaximum(10)
         self.speed_spin_box.setProperty("value", 3)
@@ -87,7 +87,7 @@ class Ui_MainWindow_Settings(object):
         font.setFamily("Comic Sans MS")
         font.setPointSize(24)
         self.back_move_label.setFont(font)
-        self.back_move_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.back_move_label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.back_move_label.setObjectName("back_move_label")
         self.gridLayout.addWidget(self.back_move_label, 2, 0, 1, 1)
         self.speed_label = QtWidgets.QLabel(self.gridLayoutWidget)
@@ -95,7 +95,7 @@ class Ui_MainWindow_Settings(object):
         font.setFamily("Comic Sans MS")
         font.setPointSize(36)
         self.speed_label.setFont(font)
-        self.speed_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.speed_label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.speed_label.setObjectName("speed_label")
         self.gridLayout.addWidget(self.speed_label, 0, 0, 1, 1)
         self.language_comboBox = QtWidgets.QComboBox(self.gridLayoutWidget)
@@ -111,10 +111,10 @@ class Ui_MainWindow_Settings(object):
         font.setWeight(75)
         self.language_comboBox.setFont(font)
         self.language_comboBox.setStyleSheet("border: 2px solid grey;\n"
-"background-color: rgb(87, 96, 134);\n"
-"color:  rgb(255, 255, 255);\n"
-"font-weight: bold;\n"
-"padding: 5px;")
+                                             "background-color: rgb(87, 96, 134);\n"
+                                             "color:  rgb(255, 255, 255);\n"
+                                             "font-weight: bold;\n"
+                                             "padding: 5px;")
         self.language_comboBox.setObjectName("language_comboBox")
         self.gridLayout.addWidget(self.language_comboBox, 1, 1, 1, 1)
         self.settings_label = QtWidgets.QLabel(self.centralwidget)

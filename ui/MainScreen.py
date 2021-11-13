@@ -21,7 +21,7 @@ class Ui_MainWindow_Play(object):
         self.background_label = QtWidgets.QLabel(self.centralwidget)
         self.background_label.setGeometry(QtCore.QRect(370, 130, 361, 361))
         self.background_label.setStyleSheet("background-color: rgb(210, 217, 255);\n"
-"border-radius: 20px;")
+                                            "border-radius: 20px;")
         self.background_label.setText("")
         self.background_label.setObjectName("background_label")
         self.l5 = QtWidgets.QPushButton(self.centralwidget)
@@ -52,8 +52,8 @@ class Ui_MainWindow_Play(object):
         sizePolicy.setHeightForWidth(self.empty.sizePolicy().hasHeightForWidth())
         self.empty.setSizePolicy(sizePolicy)
         self.empty.setStyleSheet("background-color: rgb(210, 217, 255);\n"
-"border-radius: 10px;\n"
-"")
+                                 "border-radius: 10px;\n"
+                                 "")
         self.empty.setText("")
         self.empty.setObjectName("empty")
         self.l4 = QtWidgets.QPushButton(self.centralwidget)
@@ -225,11 +225,11 @@ class Ui_MainWindow_Play(object):
         font.setPointSize(20)
         self.time_table.setFont(font)
         self.time_table.setStyleSheet("background-color: rgb(210, 217, 255);\n"
-"border-radius: 20px;\n"
-"")
+                                      "border-radius: 20px;\n"
+                                      "")
         self.time_table.setText("")
         self.time_table.setTextFormat(QtCore.Qt.AutoText)
-        self.time_table.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.time_table.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.time_table.setObjectName("time_table")
         self.score_label = QtWidgets.QLabel(self.centralwidget)
         self.score_label.setGeometry(QtCore.QRect(50, 100, 261, 51))
@@ -267,12 +267,12 @@ class Ui_MainWindow_Play(object):
         font.setPointSize(22)
         self.progressBar.setFont(font)
         self.progressBar.setStyleSheet("QProgressBar{\n"
-"    background-color: rgb(210, 217, 255);\n"
-"    border-radius: 10px;\n"
-"    color:grey;\n"
-"}\n"
-"\n"
-"QProgressBar::chunk {border-radius: 10px; background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:1 rgba(0, 188, 127, 255));}")
+                                       "    background-color: rgb(210, 217, 255);\n"
+                                       "    border-radius: 10px;\n"
+                                       "    color:grey;\n"
+                                       "}\n"
+                                       "\n"
+                                       "QProgressBar::chunk {border-radius: 10px; background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:1 rgba(0, 188, 127, 255));}")
         self.progressBar.setProperty("value", 0)
         self.progressBar.setAlignment(QtCore.Qt.AlignCenter)
         self.progressBar.setObjectName("progressBar")
