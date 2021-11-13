@@ -1,6 +1,6 @@
 import sys
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget, QFileDialog
 from PyQt5.Qt import QParallelAnimationGroup, QStatusBar, QFont
 from PyQt5.QtCore import QTimer, QPropertyAnimation, QPoint
 from PyQt5.QtGui import QIcon
@@ -20,8 +20,39 @@ class StartScreen(QMainWindow, Ui_MainWindow_Start):
         super().__init__()
         self.initUI(app_, main_window)
 
-    def initUI(self, app, main_window):
+    def initUI(self, app_, main_window):
         self.setupUi(self)
+        self.app = app_
+        self.new_game_btn.clicked.connect(self.new_game)
+        self.resume_game_btn.clicked.connect(self.resume_game)
+        self.settings_btn.clicked.connect(self.open_settings)
+        self.main_window = main_window
+
+    def new_game(self):
+        self.main_window.con = sqlite3.connect("my_game.sqlite3")
+        self.main_window.cur = self.main_window.con.cursor()
+        self.main_window.cur.execute("""
+                        CREATE TABLE IF NOT EXISTS score
+                        ([id] INTEGER PRIMARY KEY AUTOINCREMENT, [time] INTEGER, [steps] INTEGER)
+                        """)
+        self.main_window.con.commit()
+        windows.setCurrentIndex(1)
+
+    def resume_game(self):
+        file_path = QFileDialog.getOpenFileName(
+            self, 'Выбрать игру', '',
+            'БД (*.sqlite3)')[0]
+        if len(file_path):
+            self.main_window.con = sqlite3.connect(file_path)
+            self.main_window.cur = self.main_window.con.cursor()
+            windows.setCurrentIndex(1)
+
+    def open_settings(self):
+        self.main_window.previousIndex = 0
+        windows.setCurrentIndex(2)
+
+    def refresh_language(self):
+        pass
 
 
 class PlayScreen(QMainWindow, Ui_MainWindow_Play):
@@ -33,6 +64,7 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
         self.setupUi(self)
         self.app = app_
         self.language = "us"
+        self.previousIndex = 0
         self.info = QMessageBox()
         self.ok = self.info.addButton(QMessageBox.Ok)
         self.ok.setFont(QFont("Comic Sans MS", 10))
@@ -150,6 +182,8 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
         self.stop_timer_btn.clicked.connect(self.stop_timer)
         self.tips_btn.clicked.connect(self.show_dialog)
         self.back_move_btn.clicked.connect(self.back_move)
+        self.back_menu_btn.clicked.connect(self.back_menu)
+        self.save_action.triggered.connect(self.save)
 
         self.refresh_language()
 
@@ -181,7 +215,10 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
                        self.tips_btn: (f"images/buttons_{self.language}/tips_pushed.png",
                                        f"images/buttons_{self.language}/tips_not_pushed.png"),
                        self.back_move_btn: (f"images/buttons_{self.language}/back_move_pushed.png",
-                                            f"images/buttons_{self.language}/back_move_not_pushed.png")}
+                                            f"images/buttons_{self.language}/back_move_not_pushed.png"),
+                       self.back_menu_btn: (f"images/buttons_{self.language}/back_pushed.png",
+                                            f"images/buttons_{self.language}/back_not_pushed.png")
+                       }
 
         # ставим картинки на кнопки
         self.new_game_btn.setStyleSheet(f"image: url(images/buttons_{self.language}/new_game_not_pushed.png);"
@@ -208,6 +245,8 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
         self.tips_btn.setStyleSheet(f"image: url(images/buttons_{self.language}/tips_not_pushed.png);"
                                     "border-radius: 10 px;")
         self.back_move_btn.setStyleSheet(f"image: url(images/buttons_{self.language}/back_move_not_pushed.png);"
+                                         "border-radius: 10 px;")
+        self.back_menu_btn.setStyleSheet(f"image: url(images/buttons_{self.language}/back_not_pushed.png);"
                                          "border-radius: 10 px;")
         self.you_win_label.setStyleSheet(f"image: url(images/instant_images_{self.language}/you_win.png);")
         if self.language == "ru":
@@ -635,7 +674,14 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
         btn = self.sender()  # для анимации
         if btn == self.settings_btn:
             self.animation_of_button(btn)
-        windows.setCurrentIndex(1)
+        self.previousIndex = 1
+        windows.setCurrentIndex(2)
+
+    def back_menu(self):
+        btn = self.sender()
+        if btn == self.back_menu_btn:
+            self.animation_of_button(btn)
+        windows.setCurrentIndex(0)
 
     def show_dialog(self):
         btn = self.sender()
@@ -643,16 +689,24 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
             self.animation_of_button(btn)
         self.info.exec_()
 
+    def save(self):
+        file_path = QFileDialog.getSaveFileName(
+            self, 'Выбрать картинку', '',
+            'БД (*.sqlite3)')[0]
+        self.con2 = sqlite3.connect(file_path)
+        self.con.backup(target=self.con2)
+
 
 class SettingsScreen(QMainWindow, Ui_MainWindow_Settings):
-    def __init__(self, app_, main_window):
+    def __init__(self, app_, main_window, start_window):
         super().__init__()
-        self.initUI(app_, main_window)
+        self.initUI(app_, main_window, start_window)
 
-    def initUI(self, app_, main_window):
+    def initUI(self, app_, main_window, start_window):
         self.setupUi(self)
         self.app = app_
         self.main_window = main_window
+        self.start_window = start_window
         self.back_btn.clicked.connect(self.back_to_menu)
         self.speed_spin_box.setValue(self.main_window.speed_of_play_buttons)
         self.speed_spin_box.valueChanged.connect(self.refresh_speed_value)
@@ -675,7 +729,10 @@ class SettingsScreen(QMainWindow, Ui_MainWindow_Settings):
             btn.setStyleSheet(f"image: url(images/buttons_{self.main_window.language}/back_not_pushed.png);"
                               "border-radius: 10 px;")
             self.app.processEvents()
-        windows.setCurrentIndex(0)
+        if self.main_window.previousIndex == 1:
+            windows.setCurrentIndex(1)
+        elif self.main_window.previousIndex == 0:
+            windows.setCurrentIndex(0)
 
     def refresh_speed_value(self):
         self.main_window.speed_of_play_buttons = self.speed_spin_box.value()
@@ -685,8 +742,10 @@ class SettingsScreen(QMainWindow, Ui_MainWindow_Settings):
             self.main_window.language = "ru"
         elif text == "English":
             self.main_window.language = "us"
-        self.main_window.refresh_language()
         self.refresh_language()
+        self.main_window.refresh_language()
+        self.start_window.refresh_language()
+
 
     def back_animation_refresh(self, text):
         self.main_window.animation_back_move_btn = (text == "Yes" or text == "Да")
@@ -725,8 +784,9 @@ class SettingsScreen(QMainWindow, Ui_MainWindow_Settings):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     play_screen = PlayScreen(app)
-    settings_screen = SettingsScreen(app, play_screen)
     start_screen = StartScreen(app, play_screen)
+    settings_screen = SettingsScreen(app, play_screen, start_screen)
+
 
     windows = QStackedWidget()
     windows.closeEvent = play_screen.closeEvent

@@ -656,9 +656,22 @@ QProgressBar::chunk {border-radius: 10px; background-color: qlineargradient(spre
    <widget class="QPushButton" name="back_move_btn">
     <property name="geometry">
      <rect>
-      <x>90</x>
+      <x>190</x>
       <y>50</y>
-      <width>181</width>
+      <width>141</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="back_menu_btn">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>50</y>
+      <width>141</width>
       <height>81</height>
      </rect>
     </property>
@@ -676,8 +689,20 @@ QProgressBar::chunk {border-radius: 10px; background-color: qlineargradient(spre
      <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuGame">
+    <property name="title">
+     <string>Game</string>
+    </property>
+    <addaction name="save_action"/>
+   </widget>
+   <addaction name="menuGame"/>
   </widget>
   <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="save_action">
    <property name="text">
     <string>Save</string>
    </property>
