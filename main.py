@@ -7,9 +7,9 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtMultimedia import QSound
 import sqlite3
 
-from MainScreen import Ui_MainWindow_Play
-from SettingsScreen import Ui_MainWindow_Settings
-from StartScreen import Ui_MainWindow_Start
+from ui.MainScreen import Ui_MainWindow_Play
+from ui.SettingsScreen import Ui_MainWindow_Settings
+from ui.StartScreen import Ui_MainWindow_Start
 
 from time import sleep, time
 from random import shuffle, randint
