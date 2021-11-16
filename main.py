@@ -1,9 +1,9 @@
 import sys
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget, QFileDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget, QFileDialog, QShortcut
 from PyQt5.Qt import QParallelAnimationGroup, QStatusBar, QFont
 from PyQt5.QtCore import QTimer, QPropertyAnimation, QPoint
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtMultimedia import QSound
 import sqlite3
 
@@ -58,6 +58,7 @@ class StartScreen(QMainWindow, Ui_MainWindow_Start):
                         ([id] INTEGER PRIMARY KEY AUTOINCREMENT, [time] INTEGER, [steps] INTEGER)
                         """)
         self.main_window.con.commit()
+        self.main_window.is_game_opened = False
         self.main_window.update_time_table(False)
         windows.setCurrentIndex(1)
 
@@ -75,7 +76,7 @@ class StartScreen(QMainWindow, Ui_MainWindow_Start):
             self.app.processEvents()
         self.main_window.need_to_clear = False
         file_path = QFileDialog.getOpenFileName(
-            self, 'Выбрать игру', '',
+            self, 'Выбрать игру', 'games',
             'БД (*.sqlite3)')[0]
         my_game_path = ''
         backslash = r"\ "
@@ -107,6 +108,7 @@ class StartScreen(QMainWindow, Ui_MainWindow_Start):
             self.main_window.opened_con.backup(target=self.main_window.con)
             self.main_window.cur = self.main_window.con.cursor()
             self.main_window.opened_cur = self.main_window.opened_con.cursor()
+            self.main_window.is_game_opened = True
             self.main_window.update_time_table(False)
             windows.setCurrentIndex(1)
 
@@ -191,7 +193,12 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
                      "With the sound button you can turn the sound on or off.\n"
                      "The settings button redirects you to the settings where you can set various parameters.\n"
                      "Good luck have fun!"]
-        self.warnings = ["Try another name", "Попробуйте другое имя"]
+
+        self.warnings = ["Try another name.", "Попробуйте другое имя."]
+        self.warnings2 = ["Are you sure? If you will continue your game history will be deleted.",
+                          "Вы уверены? Если вы продолжите, текущий сеанс игры удалится."]
+        self.warnings3 = ["This game had never been saved. Firstly you need to save it.",
+                          "Эту игру еще никогда не сохраняли. Для начала сохраните ее."]
 
         self.statusBar = QStatusBar()
         self.setStatusBar(self.statusBar)
@@ -210,6 +217,9 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
 
         self.speeds_of_play_buttons = {10: 0, 9: 100, 8: 200, 7: 300, 6: 400, 5: 500, 4: 600, 3: 700, 2: 800, 1: 1000}
         self.speed_of_play_buttons = 8
+
+        self.opened_con = None
+        self.is_game_opened = False
 
         self.count_of_steps = 0
 
@@ -265,6 +275,11 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
         self.back_move_btn.clicked.connect(self.back_move)
         self.back_menu_btn.clicked.connect(self.back_menu)
         self.save_action.triggered.connect(self.save)
+        self.save_as_action.triggered.connect(self.save_as)
+        self.shortcut_save = QShortcut(QKeySequence("Ctrl+S"), self)
+        self.shortcut_save.activated.connect(self.save)
+        self.shortcut_save_as = QShortcut(QKeySequence("Ctrl+Shift+S"), self)
+        self.shortcut_save_as.activated.connect(self.save_as)
 
         self.refresh_language()
 
@@ -521,6 +536,8 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
                 pos_of_empty_btn = self.field.index(self.empty)
                 x_empty_btn, y_empty_btn = self.positions[pos_of_empty_btn]
                 if x_btn == x_empty_btn:
+                    if self.volume_is_on:
+                        self.sound_play_buttons.play()
                     if y_btn > y_empty_btn:
                         step = -4
                     else:
@@ -554,6 +571,8 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
                             self.field[pos_of_btn + step], self.field[pos_of_btn + 2 * step]
                         self.count_of_steps += 3
                 elif y_btn == y_empty_btn:
+                    if self.volume_is_on:
+                        self.sound_play_buttons.play()
                     if x_btn > x_empty_btn:
                         step = -1
                     else:
@@ -591,7 +610,6 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
                         self.statusBar.showMessage("You can't move this button")
                     elif self.language == "ru":
                         self.statusBar.showMessage("Эта кнопка недоступна для движения")
-                self.sound_play_buttons.play()
                 self.display_steps()
                 self.checking_for_progress_bar()
                 self.checking()
@@ -677,8 +695,8 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
         self.timer.stop()
         self.timer_is_started = False
         self.timer_label.setText('00:00:00')
-        self.times = []
         self.time_table.setText('')
+        self.times = []
         self.count_of_steps = 0
         self.clear_bd()
         self.display_steps()
@@ -759,12 +777,43 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
         if btn == self.settings_btn:
             self.animation_of_button(btn)
         self.previousIndex = 1
+        if self.game_is_started:
+            self.stop_timer()
         windows.setCurrentIndex(2)
 
     def back_menu(self):
         btn = self.sender()
         if btn == self.back_menu_btn:
             self.animation_of_button(btn)
+        warning = QMessageBox()
+        warning.setIcon(QMessageBox.Warning)
+        if self.language == "us":
+            warning.setWindowTitle("Error")
+        elif self.language == "ru":
+            warning.setWindowTitle("Ошибка")
+        ok = warning.addButton(QMessageBox.Ok)
+        cancel = warning.addButton(QMessageBox.Cancel)
+        ok.setFont(QFont("Comic Sans MS", 10))
+        ok.setStyleSheet("background-color: rgb(210, 217, 255);")
+        ok.clicked.connect(self.sound)
+        ok.clicked.connect(self.if_button_ok)
+        cancel.setFont(QFont("Comic Sans MS", 10))
+        cancel.setStyleSheet("background-color: rgb(210, 217, 255);")
+        cancel.clicked.connect(self.sound)
+        warning.setStyleSheet("background-color: rgb(149, 181, 255);")
+        warning.setFont(QFont("Comic Sans MS", 10))
+        if self.language == "us":
+            warning.setText(self.warnings2[0])
+        if self.language == "ru":
+            warning.setText(self.warnings2[1])
+        warning.exec_()
+
+    def if_button_ok(self):
+        self.cur.execute("""
+                        DELETE FROM score
+                        """)
+        self.con.commit()
+        self.new_game()
         windows.setCurrentIndex(0)
 
     def show_dialog(self):
@@ -774,8 +823,30 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
         self.info.exec_()
 
     def save(self):
+        if self.is_game_opened:
+            self.con.backup(target=self.opened_con)
+        else:
+            warning = QMessageBox()
+            warning.setIcon(QMessageBox.Warning)
+            if self.language == "us":
+                warning.setWindowTitle("Error")
+            elif self.language == "ru":
+                warning.setWindowTitle("Ошибка")
+            ok = warning.addButton(QMessageBox.Ok)
+            ok.setFont(QFont("Comic Sans MS", 10))
+            ok.setStyleSheet("background-color: rgb(210, 217, 255);")
+            ok.clicked.connect(self.sound)
+            warning.setStyleSheet("background-color: rgb(149, 181, 255);")
+            warning.setFont(QFont("Comic Sans MS", 10))
+            if self.language == "us":
+                warning.setText(self.warnings3[0])
+            if self.language == "ru":
+                warning.setText(self.warnings3[1])
+            warning.exec_()
+
+    def save_as(self):
         file_path = QFileDialog.getSaveFileName(
-            self, 'Выбрать картинку', '',
+            self, 'Выбрать картинку', 'games',
             'БД (*.sqlite3)')[0]
         my_game_path = ''
         backslash = r"\ "
@@ -804,6 +875,8 @@ class PlayScreen(QMainWindow, Ui_MainWindow_Play):
         elif len(file_path) != 0:
             self.con2 = sqlite3.connect(file_path)
             self.con.backup(target=self.con2)
+            self.is_game_opened = True
+            self.opened_con = self.con2
 
 
 class SettingsScreen(QMainWindow, Ui_MainWindow_Settings):
